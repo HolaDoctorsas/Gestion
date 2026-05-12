@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión Quejas 24/7 | HolaDr</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#28289D; --mint:#46DBB7; --mint-dk:#2E7D5A; --cyan:#2DD3FF;
+  --bg:#F0F2F8; --card:#FFFFFF; --text:#1A1A2E; --muted:#6B7280; --border:#E2E5EB;
+  --ok:#10B981; --warn:#F59E0B; --danger:#EF4444; --info:#3B82F6;
+  --shadow:0 2px 16px rgba(40,40,157,0.07); --shadow-lg:0 8px 32px rgba(40,40,157,0.12);
+  --r:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+.hdr{background:linear-gradient(135deg,var(--navy) 0%,#3a3ac7 55%,var(--cyan) 100%);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(40,40,157,.2);}
+.hdr-left{display:flex;align-items:center;gap:12px;}
+.logo{width:40px;height:40px;border-radius:50%;background:var(--mint);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--navy);}
+.hdr h1{color:#fff;font-size:15px;font-weight:600;} .hdr h1 span{font-weight:300;opacity:.8;font-size:11px;display:block;margin-top:1px;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.clock{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);padding:6px 12px;border-radius:7px;color:#fff;font-size:11px;font-weight:500;}
+.turno-now{padding:6px 14px;border-radius:7px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.turno-now.m{background:#A1EBFF;color:var(--navy);} .turno-now.t{background:var(--mint);color:var(--navy);} .turno-now.n{background:#3D3DF7;color:#fff;}
+.btn-hdr{background:var(--mint);color:var(--navy);border:none;padding:7px 16px;border-radius:7px;font-family:inherit;font-weight:600;font-size:11px;cursor:pointer;transition:.2s;} .btn-hdr:hover{background:#fff;}
+
+.main{padding:18px 24px;max-width:1600px;margin:0 auto;}
+
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px;}
+.kpi{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border-left:4px solid var(--mint);transition:.25s;}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.kpi:nth-child(2){border-left-color:var(--cyan);} .kpi:nth-child(3){border-left-color:var(--navy);} .kpi:nth-child(4){border-left-color:var(--danger);} .kpi:nth-child(5){border-left-color:var(--warn);} .kpi:nth-child(6){border-left-color:var(--ok);}
+.kpi-lbl{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;}
+.kpi-val{font-size:26px;font-weight:800;color:var(--navy);margin:1px 0;}
+.kpi-sub{font-size:9px;color:var(--muted);}
+
+.tabs{display:flex;gap:3px;margin-bottom:16px;background:var(--card);border-radius:10px;padding:3px;box-shadow:var(--shadow);}
+.tab{padding:9px 18px;border-radius:8px;border:none;background:0;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:.2s;white-space:nowrap;}
+.tab.on{background:var(--navy);color:#fff;font-weight:600;} .tab:hover:not(.on){background:#F0F1FF;}
+.tp{display:none;} .tp.on{display:block;}
+
+.cd{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);}
+.cd-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+
+.g2{display:grid;grid-template-columns:340px 1fr;gap:16px;}
+.g2eq{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+
+.aux-list{display:flex;flex-direction:column;gap:7px;}
+.aux-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#F8F9FC;border:1px solid var(--border);transition:.2s;}
+.aux-item:hover{border-color:var(--mint);background:#F0FDF9;}
+.aux-item.mt-item{border-left:3px solid var(--warn);}
+.av{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;}
+.aux-nm{font-size:11px;font-weight:600;} .aux-meta{font-size:9px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;}
+.aux-meta span{display:flex;align-items:center;gap:2px;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;} .dot.on{background:var(--ok);box-shadow:0 0 5px rgba(16,185,129,.4);animation:p 2s infinite;} .dot.off{background:var(--muted);}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.5}}
+.mt-tag{font-size:8px;background:var(--warn);color:#fff;padding:1px 5px;border-radius:3px;font-weight:600;}
+
+.btn-add{width:100%;padding:10px;border:2px dashed var(--mint);border-radius:8px;background:0;color:var(--mint-dk);font-family:inherit;font-weight:600;font-size:12px;cursor:pointer;transition:.2s;margin-top:6px;} .btn-add:hover{background:rgba(70,219,183,.06);border-style:solid;}
+.btn-sm{padding:5px 10px;border-radius:5px;border:none;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;transition:.15s;}
+.btn-mint{background:var(--mint);color:var(--navy);} .btn-mint:hover{background:#3CC9A5;}
+.btn-navy{background:var(--navy);color:#fff;} .btn-navy:hover{background:#3a3ac7;}
+.btn-out{padding:6px 14px;border-radius:7px;border:2px solid var(--navy);background:0;color:var(--navy);font-family:inherit;font-weight:600;font-size:11px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:4px;} .btn-out:hover{background:var(--navy);color:#fff;}
+
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;}
+thead th{background:var(--navy);color:#fff;padding:9px 10px;text-align:left;font-weight:600;font-size:9px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;z-index:10;white-space:nowrap;}
+thead th:first-child{border-radius:8px 0 0 0;} thead th:last-child{border-radius:0 8px 0 0;}
+tbody tr{transition:.15s;} tbody tr:hover{background:rgba(70,219,183,.05);}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tbody tr:nth-child(even){background:#FAFBFC;}
+
+.badge{padding:3px 7px;border-radius:4px;font-size:8px;font-weight:600;display:inline-block;white-space:nowrap;}
+.b-pend{background:#FEF3C7;color:#92400E;} .b-cont{background:#DBEAFE;color:#1E40AF;} .b-noti{background:#D1FAE5;color:#065F46;} .b-nc{background:#FEE2E2;color:#991B1B;} .b-rev{background:#E0E7FF;color:#3730A3;}
+
+.clog{max-height:380px;overflow-y:auto;}
+.centry{padding:9px 10px;border-left:3px solid var(--mint);margin-bottom:5px;background:#F8F9FC;border-radius:0 7px 7px 0;font-size:10px;}
+.centry.fail{border-left-color:var(--danger);}
+
+.mo{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,26,46,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:1000;}
+.mo.on{display:flex;}
+.md{background:var(--card);border-radius:var(--r);padding:26px;width:580px;max-width:94vw;box-shadow:0 20px 60px rgba(40,40,157,.18);animation:mi .25s ease;max-height:92vh;overflow-y:auto;}
+@keyframes mi{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.md h3{font-size:14px;color:var(--navy);margin-bottom:16px;}
+.fg{margin-bottom:12px;} .fg label{display:block;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:8px 10px;border:2px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;transition:.2s;background:#FAFBFC;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--mint);background:#fff;}
+.fg textarea{resize:vertical;min-height:55px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.ma{display:flex;gap:8px;margin-top:16px;}
+.ma button{flex:1;padding:10px;border:none;border-radius:7px;font-family:inherit;font-weight:600;font-size:12px;cursor:pointer;transition:.2s;}
+.btn-sv{background:var(--navy);color:#fff;} .btn-sv:hover{background:#3a3ac7;}
+.btn-cc{background:#F3F4F6;color:var(--text);} .btn-cc:hover{background:#E5E7EB;}
+
+.steps{display:flex;gap:0;margin:14px 0 10px;}
+.step{flex:1;text-align:center;padding:8px 6px;font-size:10px;font-weight:600;color:var(--muted);background:#F3F4F6;}
+.step:first-child{border-radius:6px 0 0 6px;} .step:last-child{border-radius:0 6px 6px 0;}
+.step.active{background:var(--navy);color:#fff;} .step.done{background:var(--mint);color:var(--navy);}
+.step-num{display:inline-block;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.3);line-height:18px;font-size:9px;margin-right:4px;}
+
+.toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;}
+.f-input{padding:7px 10px;border:2px solid var(--border);border-radius:7px;font-family:inherit;font-size:11px;width:180px;transition:.2s;} .f-input:focus{outline:none;border-color:var(--mint);}
+.f-sel{padding:7px 10px;border:2px solid var(--border);border-radius:7px;font-family:inherit;font-size:11px;background:var(--card);cursor:pointer;}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:40px;margin-bottom:10px;}
+.empty-text{font-size:13px;font-weight:500;}
+.empty-sub{font-size:11px;margin-top:4px;}
+
+.flow-guide{background:linear-gradient(135deg,#F0F1FF,#EAFBF6);border-radius:10px;padding:16px;margin-bottom:16px;border:1px solid var(--border);}
+.flow-guide h4{font-size:12px;color:var(--navy);margin-bottom:8px;}
+.flow-steps{display:flex;gap:0;align-items:center;}
+.flow-step{flex:1;text-align:center;padding:10px 8px;background:var(--card);border-radius:8px;font-size:10px;font-weight:600;color:var(--navy);box-shadow:var(--shadow);}
+.flow-step .num{display:block;font-size:18px;margin-bottom:2px;}
+.flow-arrow{font-size:16px;color:var(--mint);padding:0 4px;flex-shrink:0;}
+
+@media(max-width:1100px){.g2{grid-template-columns:1fr;}.kpi-row{grid-template-columns:repeat(3,1fr);}.g2eq{grid-template-columns:1fr;}}
+@media(max-width:640px){.hdr{padding:10px 12px;flex-wrap:wrap;gap:6px;}.main{padding:12px;}.kpi-row{grid-template-columns:repeat(2,1fr);}.tabs{overflow-x:auto;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="logo">H+</div>
+    <h1>Gestión Quejas 24/7 — Auxiliares<span>Dirección Médica · Turnos Rotativos · Jornada 7.33h</span></h1>
+  </div>
+  <div class="hdr-right">
+    <div class="clock" id="clock"></div>
+    <div class="turno-now" id="turnoNow"></div>
+    <button class="btn-hdr" onclick="exportDayCSV()">📥 Exportar Día</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- FLUJO GUÍA -->
+  <div class="flow-guide">
+    <h4>📌 Flujo del Auxiliar de Gestión de Quejas</h4>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="num">1️⃣</span>Registrar<br>Ingreso</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">2️⃣</span>Digitar<br>Caso Nuevo</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">3️⃣</span>Revisar en<br>Sistema</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">4️⃣</span>Contactar<br>Usuario</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">5️⃣</span>Notificar<br>Respuesta</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="num">6️⃣</span>Registrar<br>Gestión</div>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-lbl">Casos Registrados Hoy</div><div class="kpi-val" id="k1">0</div><div class="kpi-sub">Digitados por auxiliares</div></div>
+    <div class="kpi"><div class="kpi-lbl">Gestionados</div><div class="kpi-val" id="k2">0</div><div class="kpi-sub" id="k2s">0%</div></div>
+    <div class="kpi"><div class="kpi-lbl">Llamadas Realizadas</div><div class="kpi-val" id="k3">0</div><div class="kpi-sub">Incluye reintentos</div></div>
+    <div class="kpi"><div class="kpi-lbl">No Contesta</div><div class="kpi-val" id="k4">0</div><div class="kpi-sub">Pendientes reintento</div></div>
+    <div class="kpi"><div class="kpi-lbl">En Turno Ahora</div><div class="kpi-val" id="k5">0</div><div class="kpi-sub" id="k5s">—</div></div>
+    <div class="kpi"><div class="kpi-lbl">Prod. Gestiones/Hora</div><div class="kpi-val" id="k6">0</div><div class="kpi-sub">Meta: 7/h</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-t="gestion">📋 Gestión del Día</button>
+    <button class="tab" data-t="llamadas">📞 Registro Llamadas</button>
+    <button class="tab" data-t="turnos">🕐 Control Turnos</button>
+    <button class="tab" data-t="resumen">📊 Resumen Auxiliar</button>
+  </div>
+
+  <!-- TAB GESTIÓN -->
+  <div class="tp on" id="tp-gestion">
+    <div class="toolbar">
+      <input class="f-input" placeholder="🔍 Buscar caso, paciente..." oninput="D.filter=this.value.toLowerCase();render()">
+      <select class="f-sel" onchange="D.fTurno=this.value;render()"><option value="">Todos turnos</option><option value="Mañana">☀️ Mañana</option><option value="Tarde">🌤 Tarde</option><option value="Noche">🌙 Noche</option></select>
+      <select class="f-sel" onchange="D.fEstado=this.value;render()"><option value="">Todos estados</option><option>Pendiente</option><option>En Revisión</option><option>Contactado</option><option>Notificado</option><option>No Contesta</option></select>
+      <div style="flex:1"></div>
+      <button class="btn-out" onclick="openM('caso')" style="background:var(--mint);color:var(--navy);border-color:var(--mint);">➕ Nuevo Caso</button>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="cd">
+          <div class="cd-title">👥 Equipo en Turno</div>
+          <div id="auxList" class="aux-list"></div>
+          <button class="btn-add" onclick="openM('ingreso')">+ Registrar Ingreso de Turno</button>
+        </div>
+      </div>
+      <div class="cd" style="overflow:hidden;">
+        <div class="cd-title" style="justify-content:space-between;">📋 Casos PQR / Auditorías <span style="font-size:10px;font-weight:400;color:var(--muted);" id="casoCount"></span></div>
+        <div class="tw" style="max-height:440px;overflow-y:auto;">
+          <table><thead><tr>
+            <th>#</th><th>Caso</th><th>Tipo</th><th>Paciente</th><th>Rev. Sistema</th><th>Estado</th><th>Llam.</th><th>Últ. Llamada</th><th>Turno</th><th>Auxiliar</th><th>Acción</th>
+          </tr></thead><tbody id="tblBody"></tbody></table>
+        </div>
+        <div class="empty" id="emptyG">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">Sin casos registrados aún</div>
+          <div class="empty-sub">Haz clic en <strong>"➕ Nuevo Caso"</strong> para digitar el primer caso del turno</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB LLAMADAS -->
+  <div class="tp" id="tp-llamadas">
+    <div class="g2eq" style="margin-top:0;">
+      <div class="cd"><div class="cd-title">📞 Log de Llamadas</div><div class="clog" id="callLog"></div><div class="empty" id="emptyL"><div class="empty-icon">📞</div><div class="empty-text">Sin llamadas aún</div></div></div>
+      <div class="cd"><div class="cd-title">📈 Estadísticas</div><div id="callStats"></div></div>
+    </div>
+  </div>
+
+  <!-- TAB TURNOS -->
+  <div class="tp" id="tp-turnos">
+    <div class="cd">
+      <div class="cd-title">🕐 Turnos 24/7 — Semana Actual</div>
+      <p style="font-size:10px;color:var(--muted);margin-bottom:12px;">☀️ Mañana 06:00–13:20 | 🌤 Tarde 13:20–20:40 | 🌙 Noche 20:40–04:00 | ⛔ Noche → Descanso obligatorio | Jornada cambia a 7h desde 15/Jul/2026</p>
+      <div class="tw"><table><thead id="turH"></thead><tbody id="turB"></tbody></table></div>
+      <div style="margin-top:10px;font-size:10px;color:var(--muted);" id="turI"></div>
+    </div>
+  </div>
+
+  <!-- TAB RESUMEN -->
+  <div class="tp" id="tp-resumen">
+    <div class="cd">
+      <div class="cd-title">📊 Resumen por Auxiliar</div>
+      <div class="tw"><table><thead><tr><th>Auxiliar</th><th>Tipo</th><th>Turno</th><th>Ingreso</th><th>Última Atención</th><th>Casos</th><th>Gestionados</th><th>Llamadas</th><th>Gest./Hora</th><th>% Avance</th></tr></thead><tbody id="resB"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INGRESO -->
+<div class="mo" id="mo-ingreso"><div class="md">
+  <h3>📥 Registrar Ingreso de Turno</h3>
+  <div class="fg"><label>Auxiliar</label><select id="i-aux"></select></div>
+  <div class="fr">
+    <div class="fg"><label>Hora de Ingreso</label><input type="time" id="i-hora"></div>
+    <div class="fg"><label>Turno</label><select id="i-turno"><option value="Mañana">☀️ Mañana 06:00–13:20</option><option value="Tarde">🌤 Tarde 13:20–20:40</option><option value="Noche">🌙 Noche 20:40–04:00</option></select></div>
+  </div>
+  <div class="fg"><label>Observación</label><input type="text" id="i-obs" placeholder="Novedad, puntualidad..."></div>
+  <div class="ma"><button class="btn-cc" onclick="closeM('ingreso')">Cancelar</button><button class="btn-sv" onclick="saveIngreso()">✅ Registrar</button></div>
+</div></div>
+
+<!-- MODAL NUEVO CASO -->
+<div class="mo" id="mo-caso"><div class="md">
+  <h3>➕ Digitar Nuevo Caso PQR / Auditoría</h3>
+  <p style="font-size:10px;color:var(--muted);margin-bottom:14px;">El auxiliar digita aquí cada caso que recibe para gestionar en su turno</p>
+  <div class="fr">
+    <div class="fg"><label>N° Caso / Autorización *</label><input type="text" id="c-num" placeholder="PQR-2026-XXXX"></div>
+    <div class="fg"><label>Tipo *</label><select id="c-tipo"><option>Queja</option><option>Petición</option><option>Reclamo</option><option>Auditoría</option><option>Tutela</option></select></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>Nombre Paciente / Usuario *</label><input type="text" id="c-pac" placeholder="Nombre completo"></div>
+    <div class="fg"><label>N° Documento</label><input type="text" id="c-doc" placeholder="CC / TI / CE"></div>
+  </div>
+  <div class="fr3">
+    <div class="fg"><label>Teléfono</label><input type="tel" id="c-tel" placeholder="3XX XXX XXXX"></div>
+    <div class="fg"><label>Plan / EPS</label><input type="text" id="c-plan" placeholder="Plan"></div>
+    <div class="fg"><label>Prestación</label><input type="text" id="c-prest" placeholder="Servicio"></div>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>Auxiliar Asignado *</label><select id="c-aux"></select></div>
+    <div class="fg"><label>Prioridad</label><select id="c-prio"><option value="Normal">Normal</option><option value="Alta">🔴 Alta (Tutela/Urgente)</option><option value="Baja">Baja</option></select></div>
+  </div>
+  <div class="fg"><label>Observaciones iniciales</label><textarea id="c-obs" placeholder="Contexto del caso, notas previas..."></textarea></div>
+  <div class="ma"><button class="btn-cc" onclick="closeM('caso')">Cancelar</button><button class="btn-sv" onclick="saveCaso()">💾 Registrar Caso</button></div>
+</div></div>
+
+<!-- MODAL GESTIONAR -->
+<div class="mo" id="mo-llamada"><div class="md">
+  <h3>📞 Gestionar Caso — Registro de Llamada</h3>
+  <div class="steps" id="gestSteps">
+    <div class="step active"><span class="step-num">1</span>Revisar Sistema</div>
+    <div class="step"><span class="step-num">2</span>Contactar Usuario</div>
+    <div class="step"><span class="step-num">3</span>Notificar Respuesta</div>
+  </div>
+  <div class="fr"><div class="fg"><label>Caso</label><input type="text" id="l-caso" readonly></div><div class="fg"><label>Paciente</label><input type="text" id="l-pac" readonly></div></div>
+  <div class="fg"><label>PASO 1 — Revisión del Caso en Sistema (IPSA, PHC, COCO...)</label><textarea id="l-rev" placeholder="¿Qué encontró al revisar? Hallazgos, estado del proceso..." oninput="checkSteps()"></textarea></div>
+  <div class="fr">
+    <div class="fg"><label>PASO 2 — Resultado del Contacto</label><select id="l-res" onchange="checkSteps()"><option value="">— Seleccionar —</option><option value="Contactado">✅ Contactado</option><option value="No Contesta">❌ No Contesta</option><option value="Buzón">📭 Buzón de Voz</option><option value="Número Errado">⚠️ Número Errado</option><option value="Reprogramar">🔄 Reprogramar</option></select></div>
+    <div class="fg"><label>Duración (min)</label><input type="number" id="l-dur" min="0" max="120" value="3"></div>
+  </div>
+  <div class="fg"><label>PASO 3 — Respuesta Notificada al Usuario</label><textarea id="l-resp" placeholder="¿Qué se le comunicó? Resolución, próximos pasos..." oninput="checkSteps()"></textarea></div>
+  <div class="fg"><label>Observaciones</label><input type="text" id="l-obs" placeholder="Notas extra..."></div>
+  <div class="ma"><button class="btn-cc" onclick="closeM('llamada')">Cancelar</button><button class="btn-sv" onclick="saveLlamada()">💾 Guardar Gestión</button></div>
+</div></div>
+
+<script>
+const TODAY=new Date().toISOString().slice(0,10);
+const SK='hdr-quejas-'+TODAY;
+const TURNOS={'Mañana':{icon:'☀️',time:'06:00–13:20',hrs:7.33,cls:'m'},'Tarde':{icon:'🌤',time:'13:20–20:40',hrs:7.33,cls:'t'},'Noche':{icon:'🌙',time:'20:40–04:00',hrs:7.33,cls:'n'}};
+const EQ_BASE=[{id:'AC',nombre:'Angy Paola Córdoba Galeano',tipo:'TC'},{id:'CO',nombre:'Cristian David Orozco Garcia',tipo:'TC'},{id:'DG',nombre:'Dahiana Garcia Atehortua',tipo:'TC'},{id:'YA',nombre:'Yurladis Arboleda Arboleda',tipo:'TC'},{id:'MT',nombre:'Recurso Medio Tiempo',tipo:'MT'}];
+const COLS=['#28289D','#46DBB7','#2DD3FF','#F59E0B','#EF4444'];
+
+function fresh(){return{fecha:TODAY,eq:EQ_BASE.map(e=>({...e,hi:null,ua:null,turno:null,on:false})),casos:[],llam:[],nid:1,filter:'',fT:'',fE:''};}
+let D;
+function load(){try{const s=localStorage.getItem(SK);D=s?JSON.parse(s):fresh();}catch(e){D=fresh();}D.filter=D.filter||'';D.fT=D.fT||'';D.fE=D.fE||'';}
+function save(){try{localStorage.setItem(SK,JSON.stringify(D));}catch(e){}}
+
+function tNow(){const m=new Date().getHours()*60+new Date().getMinutes();if(m>=360&&m<800)return'Mañana';if(m>=800&&m<1240)return'Tarde';return'Noche';}
+function ini(n){return n.split(' ').map(w=>w[0]).join('').slice(0,2);}
+function nm(id){return D.eq.find(e=>e.id===id)?.nombre||id;}
+function sh(id){return nm(id).split(' ').slice(0,2).join(' ');}
+function hrsW(a){if(!a.hi)return 0;const[h,m]=a.hi.split(':').map(Number);const now=new Date();return Math.max(.25,(now.getHours()*60+now.getMinutes()-h*60-m)/60);}
+
+function render(){rHdr();rAux();rTbl();rKPI();save();}
+
+function rHdr(){
+  const now=new Date();
+  document.getElementById('clock').textContent=now.toLocaleDateString('es-CO',{weekday:'short',day:'numeric',month:'short',year:'numeric'})+' — '+now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const t=tNow(),ti=TURNOS[t],el=document.getElementById('turnoNow');
+  el.className='turno-now '+ti.cls; el.innerHTML=ti.icon+' '+t+' '+ti.time;
+}
+
+function rAux(){
+  document.getElementById('auxList').innerHTML=D.eq.map((a,i)=>{
+    const ca=D.casos.filter(c=>c.aux===a.id);
+    const g=ca.filter(c=>c.est==='Notificado'||c.est==='Contactado').length;
+    return`<div class="aux-item ${a.tipo==='MT'?'mt-item':''}">
+      <div class="av" style="background:${COLS[i%5]}">${ini(a.nombre)}</div>
+      <div style="flex:1"><div class="aux-nm">${a.nombre} ${a.tipo==='MT'?'<span class="mt-tag">MT</span>':''}</div>
+      <div class="aux-meta"><span><div class="dot ${a.on?'on':'off'}"></div>${a.on?'En turno':'Sin ingresar'}</span>${a.turno?`<span>${TURNOS[a.turno]?.icon} ${a.turno}</span>`:''} ${a.hi?`<span>⏰${a.hi}</span>`:''} ${a.ua?`<span>🔔Últ:${a.ua}</span>`:''}</div></div>
+      <div style="text-align:right;font-size:9px"><div style="color:var(--navy);font-weight:700">${g}/${ca.length}</div><div style="color:var(--muted)">${D.llam.filter(l=>l.ai===a.id).length} llam</div></div></div>`;
+  }).join('');
+  const opts='<option value="">Seleccionar...</option>'+D.eq.map(a=>`<option value="${a.id}">${a.nombre}${a.tipo==='MT'?' (MT)':''}</option>`).join('');
+  ['i-aux','c-aux'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+
+function rTbl(){
+  let rows=[...D.casos];
+  if(D.filter)rows=rows.filter(c=>c.num.toLowerCase().includes(D.filter)||c.pac.toLowerCase().includes(D.filter)||nm(c.aux).toLowerCase().includes(D.filter));
+  if(D.fT)rows=rows.filter(c=>c.turno===D.fT);
+  if(D.fE)rows=rows.filter(c=>c.est===D.fE);
+  const bm={'Pendiente':'b-pend','Contactado':'b-cont','Notificado':'b-noti','No Contesta':'b-nc','En Revisión':'b-rev'};
+  const body=document.getElementById('tblBody'),emp=document.getElementById('emptyG');
+  document.getElementById('casoCount').textContent=rows.length?rows.length+' caso'+(rows.length>1?'s':''):'';
+  if(!rows.length){body.innerHTML='';emp.style.display='block';return;}
+  emp.style.display='none';
+  body.innerHTML=rows.map((c,i)=>`<tr${c.prio==='Alta'?' style="background:#FFF5F5"':''}>
+    <td style="font-weight:600;color:var(--navy)">${i+1}</td>
+    <td><strong>${c.num}</strong>${c.prio==='Alta'?'<br><span class="badge b-nc">URGENTE</span>':''}</td>
+    <td>${c.tipo}</td>
+    <td>${c.pac}<br><span style="font-size:8px;color:var(--muted)">${c.doc}${c.tel?' · '+c.tel:''}</span></td>
+    <td><span class="badge ${c.rev==='Revisado'?'b-noti':c.rev==='En Revisión'?'b-rev':'b-pend'}">${c.rev}</span></td>
+    <td><span class="badge ${bm[c.est]||'b-pend'}">${c.est}</span></td>
+    <td style="text-align:center;font-weight:600">${c.nlam}</td>
+    <td>${c.ulam||'-'}</td>
+    <td><span style="font-size:9px">${TURNOS[c.turno]?.icon||''} ${c.turno}</span></td>
+    <td style="font-size:9px">${sh(c.aux)}</td>
+    <td><button class="btn-sm btn-mint" onclick="openLl(${c.id})">📞 Gestionar</button></td>
+  </tr>`).join('');
+}
+
+function rCallLog(){
+  const el=document.getElementById('callLog'),emp=document.getElementById('emptyL');
+  if(!D.llam.length){el.innerHTML='';emp.style.display='block';document.getElementById('callStats').innerHTML='';return;}
+  emp.style.display='none';
+  el.innerHTML=D.llam.map(c=>`<div class="centry ${c.res==='No Contesta'||c.res==='Buzón'?'fail':''}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px"><span style="font-weight:700;color:var(--navy);font-size:11px">${c.hora} — ${c.caso} ${TURNOS[c.turno]?.icon||''}</span><span class="badge ${c.res==='Contactado'?'b-noti':'b-nc'}">${c.res}</span></div>
+    <div style="font-size:9px;font-weight:500">${sh(c.ai)} → ${c.pac} ${c.dur>0?`(${c.dur}min)`:''}</div>
+    <div style="font-size:9px;color:var(--muted);line-height:1.4;margin-top:2px">${c.nota}</div>
+  </div>`).join('');
+  const ok=D.llam.filter(c=>c.res==='Contactado').length,nc=D.llam.filter(c=>c.res!=='Contactado').length,tm=D.llam.reduce((s,c)=>s+(c.dur||0),0);
+  document.getElementById('callStats').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="background:#D1FAE5;padding:14px;border-radius:8px;text-align:center"><div style="font-size:26px;font-weight:800;color:#065F46">${ok}</div><div style="font-size:10px;color:#065F46;font-weight:600">Contactados</div></div>
+    <div style="background:#FEE2E2;padding:14px;border-radius:8px;text-align:center"><div style="font-size:26px;font-weight:800;color:#991B1B">${nc}</div><div style="font-size:10px;color:#991B1B;font-weight:600">No Contactados</div></div>
+    <div style="background:#DBEAFE;padding:14px;border-radius:8px;text-align:center"><div style="font-size:26px;font-weight:800;color:#1E40AF">${D.llam.length}</div><div style="font-size:10px;color:#1E40AF;font-weight:600">Total Llamadas</div></div>
+    <div style="background:#FEF3C7;padding:14px;border-radius:8px;text-align:center"><div style="font-size:26px;font-weight:800;color:#92400E">${tm}min</div><div style="font-size:10px;color:#92400E;font-weight:600">Tiempo Total</div></div>
+  </div>`;
+}
+
+function rTurnos(){
+  const today=new Date(),dow=today.getDay()||7,mon=new Date(today);mon.setDate(today.getDate()-dow+1);
+  const days=[];for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);days.push(d);}
+  const dn=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  document.getElementById('turH').innerHTML=`<tr><th>Auxiliar</th><th>Tipo</th>${days.map((d,i)=>`<th style="${d.toDateString()===today.toDateString()?'background:var(--mint);color:var(--navy)':''}">${dn[i]} ${d.getDate()}/${d.getMonth()+1}</th>`).join('')}<th>Hrs</th></tr>`;
+  const pats=[['Mañana','Tarde','Noche','D','Mañana','Tarde','D'],['Tarde','Noche','D','Mañana','Tarde','Noche','D'],['Noche','D','Mañana','Tarde','Noche','D','Mañana'],['D','Mañana','Tarde','Noche','D','Mañana','Tarde'],['Mañana','D','D','Tarde','D','D','Noche']];
+  document.getElementById('turB').innerHTML=D.eq.map((a,ei)=>{const row=pats[ei];let hrs=0;return`<tr><td style="font-weight:600;font-size:10px">${a.nombre.split(' ').slice(0,3).join(' ')}</td><td>${a.tipo==='MT'?'<span class="mt-tag">MT</span>':'TC'}</td>${row.map((t,di)=>{const isT=days[di].toDateString()===today.toDateString();if(t==='D')return`<td style="background:#F3F4F6;text-align:center;${isT?'outline:2px solid var(--mint)':''}"><span style="color:#9CA3AF;font-size:10px">🏖</span></td>`;const ti=TURNOS[t];hrs+=ti.hrs;return`<td style="background:${ti.cls==='n'?'#E8E8FF':ti.cls==='t'?'#EAFBF6':'#E7F9FF'};text-align:center;${isT?'outline:2px solid var(--mint)':''}"><span style="font-size:10px;font-weight:600">${ti.icon}${t.slice(0,3)}</span><br><span style="font-size:8px;color:var(--muted)">${ti.hrs}h</span></td>`;}).join('')}<td style="text-align:center;font-weight:700;color:${hrs>(a.tipo==='MT'?22:44)?'var(--danger)':'var(--navy)'}">${hrs.toFixed(1)}h<br><span style="font-size:8px;color:var(--muted)">/${a.tipo==='MT'?'22':'44'}h</span></td></tr>`;}).join('');
+  document.getElementById('turI').innerHTML='⚖️ Ley 2101: <strong>7.33h/turno (44h TC, 22h MT)</strong> → 7h (42h) desde 15/Jul/2026 | ⛔ Noche→Descanso obligatorio';
+}
+
+function rRes(){
+  document.getElementById('resB').innerHTML=D.eq.map(a=>{
+    const ac=D.casos.filter(c=>c.aux===a.id),g=ac.filter(c=>c.est==='Notificado'||c.est==='Contactado').length,ll=D.llam.filter(l=>l.ai===a.id).length;
+    const pct=ac.length?Math.round(g/ac.length*100):0,hw=hrsW(a),prod=hw>.5?(g/hw).toFixed(1):'-';
+    const pc=pct>=80?'var(--ok)':pct>=50?'var(--warn)':'var(--danger)';
+    return`<tr><td><strong>${a.nombre}</strong></td><td>${a.tipo==='MT'?'<span class="mt-tag">MT</span>':'TC'}</td><td>${a.turno?TURNOS[a.turno]?.icon+' '+a.turno:'-'}</td><td>${a.hi||'-'}</td><td style="font-weight:600;color:var(--navy)">${a.ua||'-'}</td><td style="text-align:center">${ac.length}</td><td style="text-align:center">${g}</td><td style="text-align:center">${ll}</td><td style="text-align:center;font-weight:700;color:${parseFloat(prod)>=7?'var(--ok)':parseFloat(prod)>=5?'var(--warn)':'var(--danger)'}">${prod}</td><td><div style="display:flex;align-items:center;gap:5px"><div style="flex:1;height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${pc};border-radius:3px"></div></div><span style="font-weight:700;font-size:9px;color:${pc}">${pct}%</span></div></td></tr>`;
+  }).join('');
+}
+
+function rKPI(){
+  const t=D.casos.length,g=D.casos.filter(c=>c.est==='Notificado'||c.est==='Contactado').length,nc=D.casos.filter(c=>c.est==='No Contesta').length;
+  const enT=D.eq.filter(a=>a.on).length,hT=D.eq.reduce((s,a)=>s+hrsW(a),0),prod=hT>.5?(g/hT).toFixed(1):'0';
+  document.getElementById('k1').textContent=t;document.getElementById('k2').textContent=g;
+  document.getElementById('k2s').textContent=t?`${(g/t*100).toFixed(1)}% avance`:'0%';
+  document.getElementById('k3').textContent=D.llam.length;document.getElementById('k4').textContent=nc;
+  document.getElementById('k5').textContent=enT;const ta=tNow();document.getElementById('k5s').textContent=ta+' '+TURNOS[ta].time;
+  document.getElementById('k6').textContent=prod;
+}
+
+// TABS
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tp').forEach(x=>x.classList.remove('on'));
+  this.classList.add('on');document.getElementById('tp-'+this.dataset.t).classList.add('on');
+  if(this.dataset.t==='llamadas')rCallLog();if(this.dataset.t==='turnos')rTurnos();if(this.dataset.t==='resumen')rRes();
+}));
+
+// MODALS
+function openM(n){document.getElementById('mo-'+n).classList.add('on');}
+function closeM(n){document.getElementById('mo-'+n).classList.remove('on');}
+
+function saveIngreso(){
+  const id=document.getElementById('i-aux').value,hora=document.getElementById('i-hora').value,turno=document.getElementById('i-turno').value;
+  if(!id||!hora){alert('Seleccione auxiliar y hora');return;}
+  const a=D.eq.find(e=>e.id===id);if(a){a.hi=hora;a.turno=turno;a.on=true;}
+  closeM('ingreso');render();
+}
+
+function saveCaso(){
+  const num=document.getElementById('c-num').value.trim(),pac=document.getElementById('c-pac').value.trim(),aux=document.getElementById('c-aux').value;
+  if(!num||!pac||!aux){alert('Complete caso, paciente y auxiliar');return;}
+  D.casos.unshift({id:D.nid++,num,tipo:document.getElementById('c-tipo').value,pac,doc:document.getElementById('c-doc').value.trim(),tel:document.getElementById('c-tel').value.trim(),plan:document.getElementById('c-plan').value.trim(),prest:document.getElementById('c-prest').value.trim(),aux,prio:document.getElementById('c-prio').value,obs:document.getElementById('c-obs').value.trim(),rev:'Pendiente',est:'Pendiente',nlam:0,ulam:null,turno:tNow(),hreg:new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})});
+  ['c-num','c-pac','c-doc','c-tel','c-plan','c-prest','c-obs'].forEach(id=>document.getElementById(id).value='');
+  closeM('caso');render();
+}
+
+let curId=null;
+function openLl(id){
+  curId=id;const c=D.casos.find(x=>x.id===id);
+  document.getElementById('l-caso').value=c.num;document.getElementById('l-pac').value=c.pac;
+  ['l-rev','l-resp','l-obs'].forEach(id=>document.getElementById(id).value='');document.getElementById('l-res').value='';
+  checkSteps();openM('llamada');
+}
+function checkSteps(){
+  const rv=!!document.getElementById('l-rev').value.trim(),rs=!!document.getElementById('l-res').value,rp=!!document.getElementById('l-resp').value.trim();
+  const s=document.querySelectorAll('#gestSteps .step');
+  s[0].className='step '+(rv?'done':'active');s[1].className='step '+(rs?(rv?'done':'active'):'');s[2].className='step '+(rp?(rs&&rv?'done':'active'):'');
+}
+function saveLlamada(){
+  const c=D.casos.find(x=>x.id===curId),rev=document.getElementById('l-rev').value.trim(),res=document.getElementById('l-res').value;
+  const dur=parseInt(document.getElementById('l-dur').value)||0,resp=document.getElementById('l-resp').value.trim(),obs=document.getElementById('l-obs').value.trim();
+  if(!res){alert('Seleccione resultado del contacto');return;}
+  const hora=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+  c.nlam++;c.ulam=hora;if(rev)c.rev='Revisado';
+  if(res==='Contactado')c.est=resp?'Notificado':'Contactado';else if(res==='No Contesta'||res==='Buzón'||res==='Número Errado')c.est='No Contesta';
+  const aux=D.eq.find(e=>e.id===c.aux);if(aux)aux.ua=hora;
+  D.llam.unshift({hora,caso:c.num,pac:c.pac.split(' ').slice(0,2).join(' '),ai:c.aux,turno:c.turno,res,dur,nota:`${rev?'📋 '+rev+'. ':''}${resp?'📢 '+resp+'. ':''}${obs}`});
+  closeM('llamada');render();
+}
+
+function exportDayCSV(){
+  if(!D.casos.length&&!D.llam.length){alert('No hay datos');return;}
+  let csv='=== GESTIÓN DIARIA QUEJAS '+TODAY+' ===\n\nCASOS\nN°,Caso,Tipo,Paciente,Documento,Teléfono,Plan,Prestación,Rev.Sistema,Estado,Llamadas,Últ.Llamada,Turno,Auxiliar,Prioridad,Hora Registro\n';
+  D.casos.forEach((c,i)=>csv+=`${i+1},"${c.num}","${c.tipo}","${c.pac}","${c.doc}","${c.tel}","${c.plan}","${c.prest}","${c.rev}","${c.est}",${c.nlam},"${c.ulam||''}","${c.turno}","${nm(c.aux)}","${c.prio}","${c.hreg}"\n`);
+  csv+='\nLLAMADAS\nHora,Caso,Paciente,Auxiliar,Turno,Resultado,Duración,Detalle\n';
+  D.llam.forEach(l=>csv+=`"${l.hora}","${l.caso}","${l.pac}","${nm(l.ai)}","${l.turno}","${l.res}",${l.dur},"${l.nota.replace(/"/g,"'")}"\n`);
+  csv+='\nINGRESOS\nAuxiliar,Tipo,Turno,Hora Ingreso,Última Atención\n';
+  D.eq.forEach(a=>csv+=`"${a.nombre}","${a.tipo}","${a.turno||''}","${a.hi||''}","${a.ua||''}"\n`);
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`gestion_quejas_${TODAY}.csv`;a.click();
+}
+
+// INIT
+load();
+document.getElementById('i-hora').value=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+document.getElementById('i-turno').value=tNow();
+render();
+setInterval(rHdr,1000);
+setInterval(save,30000);
+</script>
+</body>
+</html>
